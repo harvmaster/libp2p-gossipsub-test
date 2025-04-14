@@ -1,4 +1,5 @@
 import { PubSubService } from './pubsub-service'
+import { hexToBin } from '@bitauth/libauth'
 
 // Create 2 instances of the PubSubService
 // Start them both
@@ -10,10 +11,7 @@ import { PubSubService } from './pubsub-service'
 const run = async () => {
   console.log('Starting node...')
   const node = await PubSubService.create({
-    addresses: {
-      // Listen on all interfaces
-      listen: ['/ip4/0.0.0.0/tcp/0']
-    }
+    privateKey: hexToBin('86a8e4129cbf1edd9a6306c6180ded1fc603d0f914c1ade2d824a5a9e830d151')
   })
 
   // Log all peer connections
@@ -24,14 +22,14 @@ const run = async () => {
   // Log all messages from any topic
   node.on('message', ({ topic, data }) => {
     console.log('Received message on topic:', topic)
-    console.log('Message:', new TextDecoder().decode(data))
+    console.log('Message:', data)
   })
 
   await node.start()
   console.log('Node started with ID:', node.getPeerId())
 
   // Subscribe to topics you're interested in
-  const topics = ['global-chat', 'announcements', 'updates']
+  const topics = ['global-chat', 'announcements', 'updates', 'XO', 'XO-TEST']
   for (const topic of topics) {
     await node.subscribe(topic)
     console.log(`Subscribed to ${topic}`)
